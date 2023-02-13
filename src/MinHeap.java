@@ -80,6 +80,9 @@ public class MinHeap<T extends Comparable<? super T>> {
      */
     public T remove() {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (this.size == 0){
+            throw new NoSuchElementException();
+        }
         T removeItem = backingArray[1];
         backingArray[1] = backingArray[this.size];
         backingArray[this.size] = null;
