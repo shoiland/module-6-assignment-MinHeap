@@ -1,0 +1,162 @@
+import java.util.Random;
+
+public class Main {
+    public static void main(String[] args) {
+        MinHeap<Integer> numbers = new MinHeap<>();
+//        for (int i = 0; i < 15; i++){
+//            Random randI = new Random();
+//            int myRandInt = randI.nextInt(100);
+//            myRandInt = myRandInt + 1;
+//            numbers.add(myRandInt);
+//        }
+        numbers.add(0);
+        numbers.add(7);
+        numbers.add(14);
+        numbers.add(28);
+        numbers.add(21);
+        numbers.add(35);
+        numbers.add(49);
+        numbers.add(42);
+        numbers.add(56);
+        numbers.add(63);
+        numbers.add(70);
+        System.out.println("hey");
+        System.out.println(numbers.remove());
+        System.out.println("hey");
+    }
+}
+
+
+
+import java.util.NoSuchElementException;
+
+/**
+ * Your implementation of a MinHeap.
+ */
+public class MinHeap<T extends Comparable<? super T>> {
+
+    /**
+     * The initial capacity of the MinHeap.
+     *
+     * DO NOT MODIFY THIS VARIABLE!
+     */
+    public static final int INITIAL_CAPACITY = 13;
+
+    /*
+     * Do not add new instance variables or modify existing ones.
+     */
+    private T[] backingArray;
+    private int size;
+
+    /**
+     * This is the constructor that constructs a new MinHeap.
+     *
+     * Recall that Java does not allow for regular generic array creation,
+     * so instead we cast a Comparable[] to a T[] to get the generic typing.
+     */
+    public MinHeap() {
+        //DO NOT MODIFY THIS METHOD!
+        backingArray = (T[]) new Comparable[INITIAL_CAPACITY];
+    }
+
+    /**
+     * Adds an item to the heap. If the backing array is full (except for
+     * index 0) and you're trying to add a new item, then double its capacity.
+     *
+     * Method should run in amortized O(log n) time.
+     *
+     * @param data The data to add.
+     * @throws java.lang.IllegalArgumentException If the data is null.
+     */
+    public void add(T data) {
+        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (data == null){
+            throw new IllegalArgumentException();
+        }
+        backingArray[this.size + 1] = data;
+        this.size++;
+        int parentIndex = this.size / 2;
+        upHeaveAdd(this.size, parentIndex);
+    }
+
+    private void upHeaveAdd(int dataIndex, int parentIndex){
+        if (parentIndex == 0){
+            return;
+        }
+        if (backingArray[parentIndex].compareTo(backingArray[dataIndex]) > 0){
+            T temp = backingArray[parentIndex];
+            backingArray[parentIndex] = backingArray[dataIndex];
+            backingArray[dataIndex] = temp;
+            upHeaveAdd(parentIndex, parentIndex/2);
+        }
+    }
+
+    /**
+     * Removes and returns the min item of the heap. As usual for array-backed
+     * structures, be sure to null out spots as you remove. Do not decrease the
+     * capacity of the backing array.
+     *
+     * Method should run in O(log n) time.
+     *
+     * @return The data that was removed.
+     * @throws java.util.NoSuchElementException If the heap is empty.
+     */
+    public T remove() {
+        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        T removeItem = backingArray[1];
+        backingArray[1] = backingArray[this.size];
+        backingArray[this.size] = null;
+        int parentIndex = 1;
+        int childLeft = 2;
+        int childRight = 3;
+        downHeaveRemove(parentIndex, childLeft, childRight);
+        return removeItem;
+    }
+
+    private void downHeaveRemove(int parent, int leftChild, int rightChild) {
+        if (backingArray[rightChild] == null) {
+            return;
+        }
+        boolean leftSmaller = backingArray[leftChild].compareTo(backingArray[rightChild]) < 0;
+        if (leftSmaller) {
+            if (backingArray[parent].compareTo(backingArray[leftChild]) > 0) {
+                T temp = backingArray[parent];
+                backingArray[parent] = backingArray[leftChild];
+                backingArray[leftChild] = temp;
+                downHeaveRemove(leftChild, leftChild * 2, leftChild * 2 + 1);
+            }
+        } else {
+            if (backingArray[parent].compareTo(backingArray[rightChild]) > 0) {
+                T temp = backingArray[parent];
+                backingArray[parent] = backingArray[rightChild];
+                backingArray[rightChild] = temp;
+                downHeaveRemove(rightChild, rightChild * 2, rightChild * 2 + 1);
+            }
+        }
+    }
+    /**
+     * Returns the backing array of the heap.
+     *
+     * For grading purposes only. You shouldn't need to use this method since
+     * you have direct access to the variable.
+     *
+     * @return The backing array of the list
+     */
+    public T[] getBackingArray() {
+        // DO NOT MODIFY THIS METHOD!
+        return backingArray;
+    }
+
+    /**
+     * Returns the size of the heap.
+     *
+     * For grading purposes only. You shouldn't need to use this method since
+     * you have direct access to the variable.
+     *
+     * @return The size of the list
+     */
+    public int size() {
+        // DO NOT MODIFY THIS METHOD!
+        return size;
+    }
+}
